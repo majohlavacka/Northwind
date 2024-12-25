@@ -3,6 +3,8 @@ Tento repozitár obsahuje implementáciu ETL procesu v Snowflake pre analýzu d�
 # 1. Úvod a popis zdrojových dát
 Cieľom tohto semestrálneho projektu je analyzovať dáta o zákazníkoch, objednávkach, produktoch a zamestnancoch v Northwind databáze. Projekt sa zameriava na identifikáciu obchodných trendov, preferencií zákazníkov a správanie zamestnancov, ktoré môžu pomôcť pri optimalizácii predajov a poskytovaní lepších služieb zákazníkom.
 
+Zdrojové dáta pochádzajú z datasetu [tu]([https://example.com](https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/northwind-pubs)). Dataset obsahuje 8 hlavných tabuliek:
+
 - `orderdetails`
 - `products`
 - `categories`
@@ -11,3 +13,5 @@ Cieľom tohto semestrálneho projektu je analyzovať dáta o zákazníkoch, obje
 - `orders`
 - `customers`
 - `employees`
+
+Účelom ETL procesu bolo tieto dáta pripraviť, transformovať a sprístupniť pre viacdimenzionálnu analýzu.
