@@ -17,13 +17,10 @@ Zdrojové dáta pochádzajú z datasetu na githube [tu](https://github.com/micro
 Účelom ETL procesu bolo tieto dáta pripraviť, transformovať a sprístupniť pre viacdimenzionálnu analýzu.
 # 1.1 Dátová architektúra
 Surové dáta sú usporiadané v relačnom modeli, ktorý je znázornený na entitno-relačnom diagrame (ERD):
-<div align="center">
-![Obrázok 1 Entitno-relačná schéma Northwind](Northwind_ERD.png)
-</div>
-<div align="center">
+<center>
   ![Obrázok 1 Entitno-relačná schéma Northwind](Northwind_ERD.png)
   <br>
-  <i>Obrázok 1: Entitno-relačná schéma databázy Northwind.</i>
-</div>
+  *Obrázok 1: Entitno-relačná schéma databázy Northwind.*
+</center>
 
 
