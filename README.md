@@ -18,3 +18,6 @@ Zdrojové dáta pochádzajú z datasetu na githube [tu](https://github.com/micro
 # 1.1 Dátová architektúra
 Surové dáta sú usporiadané v relačnom modeli, ktorý je znázornený na entitno-relačnom diagrame (ERD):
 ![Obrázok 1 Entitno-relačná schéma Northwind](Northwind_ERD.png)
+
+Obrázok 1: Entitno-relačná schéma databázy Northwind.
+
