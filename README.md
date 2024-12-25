@@ -22,6 +22,7 @@ Surové dáta sú usporiadané v relačnom modeli, ktorý je znázornený na ent
   <br>
   <i>Obrázok 1: Entitno-relačná schéma databázy Northwind.</i>
 </p>
+
 # 2 Dimenzionálny model
 Navrhnutý bol hviezdicový model (star schema), pre efektívnu analýzu kde centrálny bod predstavuje faktová tabuľka `fact_sales`, ktorá vychádza z tabuliek orders a orderdetails a je prepojená s nasledujúcimi dimenziami:
 - `dim_products`: Obsahuje informácie o produktoch (názov, cena, dodávateľ).
