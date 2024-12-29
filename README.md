@@ -24,7 +24,7 @@ Surové dáta sú usporiadané v relačnom modeli, ktorý je znázornený na ent
 </p>
 
 # 2 Dimenzionálny model
-Navrhnutý bol hviezdicový model (star schema), pre efektívnu analýzu kde centrálny bod predstavuje faktová tabuľka `fact_sales`, ktorá vychádza z tabuliek orders a orderdetails a je prepojená s nasledujúcimi dimenziami:
+Navrhnutý bol hviezdicový model (star schema), pre efektívnu analýzu, kde centrálny bod predstavuje faktová tabuľka `fact_orderdetails`, ktorá je prepojená s dimenzionálnmi tabuľkami:
 - `dim_products`: Obsahuje informácie o produktoch vrátane ich názvu, ceny, kategórie a údajov o dodávateľoch.
 - `dim_customers`: Uchováva demografické údaje zákazníkov, ako meno, kontaktné údaje, mesto a krajinu.
 - `dim_employees`:  Zaznamenáva informácie o zamestnancoch, ako sú mená a dátumy narodenia.
