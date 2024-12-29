@@ -50,3 +50,16 @@ Dáta zo zdrojového datasetu (formát .csv) boli najprv nahraté do Snowflake p
 
 ```sql
 CREATE OR REPLACE STAGE my_stage;
+```
+Do stage boli následne nahrané súbory obsahujúce údaje o rôznych entitách, ako sú kategórie, zákazníci, zamestnanci, objednávky, detaily objednávok, produkty, dodávatelia a prepravcovia. Tieto dáta boli následne spracované a importované do staging tabuliek pomocou príkazu COPY INTO. Pre každú tabuľku sa použil obdobný príkaz, upravený podľa konkrétnych dát a požiadaviek.
+
+```sql
+COPY INTO products_staging
+FROM @my_stage/products.csv
+FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1);
+```
+
+V prípade nekonzistentných záznamov bol použitý parameter ON_ERROR = 'CONTINUE', ktorý zabezpečil pokračovanie procesu bez prerušenia pri chybách.
+
+## 3.22 Transfor (Transformácia dát)
+
