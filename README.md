@@ -48,5 +48,5 @@ Dáta zo zdrojového datasetu (formát .csv) boli najprv nahraté do Snowflake p
 
 #### Príklad kódu:
 
-```CREATE OR REPLACE STAGE my_stage;
-
+```sql
+CREATE OR REPLACE STAGE my_stage;
