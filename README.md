@@ -25,11 +25,16 @@ Surové dáta sú usporiadané v relačnom modeli, ktorý je znázornený na ent
 
 # 2 Dimenzionálny model
 Navrhnutý bol hviezdicový model (star schema), pre efektívnu analýzu kde centrálny bod predstavuje faktová tabuľka `fact_sales`, ktorá vychádza z tabuliek orders a orderdetails a je prepojená s nasledujúcimi dimenziami:
-- `dim_products`: Obsahuje informácie o produktoch (názov, cena, dodávateľ).
-- `dim_categories`: Uchováva údaje o kategóriách produktov.
-- `dim_suppliers`: Poskytuje informácie o dodávateľoch (názov, krajina).
-- `dim_customers`: Zahŕňa údaje o zákazníkoch (meno, adresa, krajina).
-- `dim_employees`: Obsahuje údaje o zamestnancoch (meno, pozícia, pracovisko)
+- `dim_products`: Obsahuje informácie o produktoch vrátane ich názvu, ceny, kategórie a údajov o dodávateľoch.
+- `dim_customers`: Uchováva demografické údaje zákazníkov, ako meno, kontaktné údaje, mesto a krajinu.
+- `dim_employees`:  Zaznamenáva informácie o zamestnancoch, ako sú mená a dátumy narodenia.
+- `dim_shippers`: Obsahuje detaily o prepravcoch vrátane ich názvu.
+- `dim_time`: Poskytuje časové údaje o objednávkach vrátane dátumu, času a ďalších časových dimenzií (rok, mesiac, deň, AM/PM).
 
 Štruktúra hviezdicového modelu je znázornená na diagrame nižšie. Diagram ukazuje prepojenia medzi faktovou tabuľkou a dimenziami, čo zjednodušuje pochopenie a implementáciu modelu.
+<p align="center">
+  <img src="Northwind_star_scheme.png" alt="Obrázok 2 Schéma hviezdy pre Northwind" width="500"/>
+  <br>
+  <i>Obrázok 2 Schéma hviezdy pre Northwind.</i>
+</p>
 
