@@ -53,6 +53,8 @@ CREATE OR REPLACE STAGE my_stage;
 ```
 Do stage boli následne nahrané súbory obsahujúce údaje o rôznych entitách, ako sú kategórie, zákazníci, zamestnanci, objednávky, detaily objednávok, produkty, dodávatelia a prepravcovia. Tieto dáta boli následne spracované a importované do staging tabuliek pomocou príkazu COPY INTO. Pre každú tabuľku sa použil obdobný príkaz, upravený podľa konkrétnych dát a požiadaviek.
 
+#### Príklad kódu:
+
 ```sql
 COPY INTO products_staging
 FROM @my_stage/products.csv
