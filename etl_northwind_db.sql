@@ -36,10 +36,11 @@ CREATE TABLE categories_staging (
 -- Vytvorenie tabulky products (staging)
 CREATE TABLE products_staging (
     ProductId INT PRIMARY KEY,
-    Unit VARCHAR(25),
-    Price DECIMAL(10,0),
+    ProductName VARCHAR(50),
     SupplierId INT,
     CategoryId INT,
+    Unit VARCHAR(255),
+    Price DECIMAL(10,0),
     FOREIGN KEY (SupplierId) REFERENCES suppliers_staging(SupplierId),
     FOREIGN KEY (CategoryId) REFERENCES categories_staging(CategoryId)
 );
@@ -61,7 +62,6 @@ CREATE TABLE employees_staging (
     LastName VARCHAR(15),
     FirstName VARCHAR(15),
     BirthDate TIMESTAMP,
-    City VARCHAR(20),
     Photo VARCHAR(25),
     Notes VARCHAR(1024)
 );
@@ -75,10 +75,10 @@ CREATE TABLE shippers_staging (
 
 -- Vytvorenie tabulky orders (staging)
 CREATE TABLE orders_staging (
-    OrdersId INT PRIMARY KEY,
-    OrderDate TIMESTAMP,
+    OrderId INT PRIMARY KEY,
     CustomerId INT,
     EmployeeId INT,
+    OrderDate TIMESTAMP,
     ShipperId INT,
     FOREIGN KEY (CustomerId) REFERENCES customers_staging(CustomerId),
     FOREIGN KEY (EmployeeId) REFERENCES employees_staging(EmployeeId),
@@ -88,11 +88,48 @@ CREATE TABLE orders_staging (
 -- Vytvorenie tabulky orderdetails (staging)
 CREATE TABLE orderdetails_staging (
     OrderDetailId INT PRIMARY KEY,
-    Quantity INT,
     OrderId INT,
     ProductId INT,
-    FOREIGN KEY (OrderId) REFERENCES orders_staging(OrdersId),
+    Quantity INT,
+    FOREIGN KEY (OrderId) REFERENCES orders_staging(OrderId),
     FOREIGN KEY (ProductId) REFERENCES products_staging(ProductId)
 );
 
 SHOW TABLES;
+
+-- Vytvorenie my_stage pre .csv súbory
+CREATE OR REPLACE STAGE my_stage;
+
+COPY INTO suppliers_staging
+FROM @my_stage/suppliers.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
+
+COPY INTO categories_staging
+FROM @my_stage/categories.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
+
+COPY INTO products_staging
+FROM @my_stage/products.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
+
+COPY INTO customers_staging
+FROM @my_stage/customers.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
+
+COPY INTO employees_staging
+FROM @my_stage/employees.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
+
+COPY INTO shippers_staging
+FROM @my_stage/shippers.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
+
+COPY INTO orders_staging
+FROM @my_stage/orders.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
+
+COPY INTO orderdetails_staging
+FROM @my_stage/orderdetails.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
+
+--- ELT - (T)ransform
