@@ -26,46 +26,46 @@ Surové dáta sú organizované v relačnom databázovom modeli, ktorý je vizua
 
 Hlavné tabuľky zahŕňajú:
 Categories (Kategórie): Umožňuje klasifikáciu produktov do rôznych skupín.
-`CategoryId` - Primárny kľúč.
-`CategoryName` - Názov kategórie.
-`Description` - Popis kategórie.
+-`CategoryId` - Primárny kľúč.
+-`CategoryName` - Názov kategórie.
+-`Description` - Popis kategórie.
 
 Products (Produkty): Detaily o produktoch predávaných spoločnosťou.
-`ProductId` - Primárny kľúč.
-`ProductName` - Názov produktu.
+-`ProductId` - Primárny kľúč.
+-`ProductName` - Názov produktu.
 `SupplierId` - Vzťah k tabuľke Suppliers.
-`CategoryId` - Vzťah k tabuľke Categories.
-`Unit, Price` - Informácie o balení a cene.
+-`CategoryId` - Vzťah k tabuľke Categories.
+-`Unit, Price` - Informácie o balení a cene.
 
 Suppliers (Dodávatelia): Informácie o dodávateľoch.
-`SupplierId` - Primárny kľúč.
-`CompanyName, ContactName, Address, City, Country` - Kontaktné informácie.
+-`SupplierId` - Primárny kľúč.
+-`CompanyName, ContactName, Address, City, Country` - Kontaktné informácie.
 
 Shippers (Prepravcovia): Informácie o prepravovacej spoločnosti.
-`ShipperId` - Primárny kľúč.
-`ShipperName` - Názov prepravcu.
-`Phone` - Telefónne číslo.
+-`ShipperId` - Primárny kľúč.
+-`ShipperName` - Názov prepravcu.
+-`Phone` - Telefónne číslo.
 
 Customers (Zákazníci): Informácie o zákazníkoch.
-`CustomerId` - Primárny kľúč.
-`CompanyName, Address, City, Country, Phone` - Kontaktné údaje.
+-`CustomerId` - Primárny kľúč.
+-`CompanyName, Address, City, Country, Phone` - Kontaktné údaje.
 
 Employees (Zamestnanci): Informácie o zamestnancoch.
-`EmployeeId` - Primárny kľúč.
-`LastName, FirstName, BirthDate, Notes` - Osobné údaje.
+-`EmployeeId` - Primárny kľúč.
+-`LastName, FirstName, BirthDate, Notes` - Osobné údaje.
 
 Orders (Objednávky): Informácie o oobjednávkach.
-`OrderId` - Primárny kľúč.
-`CustomerId` - Vzťah k tabuľke Customers.
-`EmployeeId` - Vzťah k tabuľke Employees.
-`OrderDate` - Dátum objednávky.
-`ShipperId` - Vzťah k tabuľke Shippers.
+-`OrderId` - Primárny kľúč.
+-`CustomerId` - Vzťah k tabuľke Customers.
+-`EmployeeId` - Vzťah k tabuľke Employees.
+-`OrderDate` - Dátum objednávky.
+-`ShipperId` - Vzťah k tabuľke Shippers.
 
 OrderDetails (Detaily objednávok): Spojovacia tabuľku medzi objednávkami a produktmi.
-`OrderDetailId` -  Primárny kľúč.
-`OrderId` - Vzťah k tabuľke Orders.
-`ProductId` - Vzťah k tabuľke Products.
-`Quantity` - Počet objednaných kusov.
+-`OrderDetailId` -  Primárny kľúč.
+-`OrderId` - Vzťah k tabuľke Orders.
+-`ProductId` - Vzťah k tabuľke Products.
+-`Quantity` - Počet objednaných kusov.
 
 # 2 Dimenzionálny model
 Navrhnutý bol hviezdicový model (star schema), pre efektívnu analýzu, kde centrálny bod predstavuje faktová tabuľka `fact_orderdetails`, ktorá je prepojená s dimenzionálnmi tabuľkami:
