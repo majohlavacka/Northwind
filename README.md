@@ -1,11 +1,11 @@
 # ETL proces datasetu Northwind
 Tento repozitár obsahuje implementáciu ETL procesu v Snowflake pre analýzu dát z Northwind datasetu. Projekt sa zameriava na analýzu správania zákazníkov a ich nákupných preferencií na základe informácií o objednávkach, produktoch a zákazníkoch. Výsledný dátový model umožňuje multidimenzionálnu analýzu a vizualizáciu kľúčových metrik, ako sú tržby, obľúbenosť produktov, a sezónne trendy.
 # 1. Úvod a popis zdrojových dát
-Cieľom tohto semestrálneho projektu je analyzovať dáta o zákazníkoch, objednávkach, produktoch a zamestnancoch v Northwind databáze. Projekt sa zameriava na identifikáciu obchodných trendov, preferencií zákazníkov a správanie zamestnancov, ktoré môžu pomôcť pri optimalizácii predajov a poskytovaní lepších služieb zákazníkom.
+Cieľom tohto projektu je vykonať analýzu dát z Northwind databázy, ktorá obsahuje informácie o zákazníkoch, objednávkach, produktoch a zamestnancoch. Analýza sa zameriava na identifikáciu kľúčových obchodných trendov, zákazníckych preferencií a pracovných návykov zamestnancov, pričom tieto poznatky môžu slúžiť na optimalizáciu predajných stratégií a zvýšenie spokojnosti zákazníkov.
 
-Zdrojové dáta pochádzajú z datasetu na githube [tu](https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/northwind-pubs). Dataset obsahuje 8 hlavných tabuliek:
+Northwind databáza je verejne dostupná na [GitHube](https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/northwind-pubs) a zahŕňa 8 hlavných tabuliek:
 
-- `orderdetails`
+- `orderdetails` 
 - `products`
 - `categories`
 - `suppliers`
@@ -14,14 +14,58 @@ Zdrojové dáta pochádzajú z datasetu na githube [tu](https://github.com/micro
 - `customers`
 - `employees`
 
-Účelom ETL procesu bolo tieto dáta pripraviť, transformovať a sprístupniť pre viacdimenzionálnu analýzu.
+Dáta z .sql súboru importujeme do lokálneho serveru MySQL a jednotlivé tabuľky vyexportujeme do .csv súborov. 
 # 1.1 Dátová architektúra
-Surové dáta sú usporiadané v relačnom modeli, ktorý je znázornený na entitno-relačnom diagrame (ERD):
+Pôvodne dáta, ktoré obsahuje databáza Northwind 
+Surové dáta sú organizované v relačnom databázovom modeli, ktorý je vizualizovaný pomocou entitno-relačného diagramu (ERD). Tento diagram zobrazuje hlavné entity v databáze Northwind, ich atribúty a vzájomné vzťahy.
 <p align="center">
   <img src="Northwind_ERD.png" alt="Obrázok 1 Entitno-relačná schéma Northwind" width="500"/>
   <br>
   <i>Obrázok 1: Entitno-relačná schéma databázy Northwind.</i>
 </p>
+
+Hlavné tabuľky zahŕňajú:
+Categories (Kategórie): Umožňuje klasifikáciu produktov do rôznych skupín.
+`CategoryId` - Primárny kľúč.
+`CategoryName` - Názov kategórie.
+`Description` - Popis kategórie.
+
+Products (Produkty): Detaily o produktoch predávaných spoločnosťou.
+`ProductId` - Primárny kľúč.
+`ProductName` - Názov produktu.
+`SupplierId` - Vzťah k tabuľke Suppliers.
+`CategoryId` - Vzťah k tabuľke Categories.
+`Unit, Price` - Informácie o balení a cene.
+
+Suppliers (Dodávatelia): Informácie o dodávateľoch.
+`SupplierId` - Primárny kľúč.
+`CompanyName, ContactName, Address, City, Country` - Kontaktné informácie.
+
+Shippers (Prepravcovia): Informácie o prepravovacej spoločnosti.
+`ShipperId` - Primárny kľúč.
+`ShipperName` - Názov prepravcu.
+`Phone` - Telefónne číslo.
+
+Customers (Zákazníci): Informácie o zákazníkoch.
+`CustomerId` - Primárny kľúč.
+`CompanyName, Address, City, Country, Phone` - Kontaktné údaje.
+
+Employees (Zamestnanci): Informácie o zamestnancoch.
+`EmployeeId` - Primárny kľúč.
+`LastName, FirstName, BirthDate, Notes` - Osobné údaje.
+
+Orders (Objednávky): Informácie o oobjednávkach.
+`OrderId` - Primárny kľúč.
+`CustomerId` - Vzťah k tabuľke Customers.
+`EmployeeId` - Vzťah k tabuľke Employees.
+`OrderDate` - Dátum objednávky.
+`ShipperId` - Vzťah k tabuľke Shippers.
+
+OrderDetails (Detaily objednávok): Spojovacia tabuľku medzi objednávkami a produktmi.
+`OrderDetailId` -  Primárny kľúč.
+`OrderId` - Vzťah k tabuľke Orders.
+`ProductId` - Vzťah k tabuľke Products.
+`Quantity` - Počet objednaných kusov.
 
 # 2 Dimenzionálny model
 Navrhnutý bol hviezdicový model (star schema), pre efektívnu analýzu, kde centrálny bod predstavuje faktová tabuľka `fact_orderdetails`, ktorá je prepojená s dimenzionálnmi tabuľkami:
