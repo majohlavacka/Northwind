@@ -25,6 +25,7 @@ Surové dáta sú organizované v relačnom databázovom modeli, ktorý je vizua
 </p>
 
 Hlavné tabuľky zahŕňajú:
+
 Categories (Kategórie): Umožňuje klasifikáciu produktov do rôznych skupín.
 - `CategoryId` - Primárny kľúč.
 - `CategoryName` - Názov kategórie.
