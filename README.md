@@ -3,6 +3,27 @@ Tento repozitár obsahuje implementáciu ETL procesu v Snowflake pre analýzu d�
 # 1 Úvod a popis zdrojových dát
 Cieľom tohto projektu je vykonať analýzu dát z Northwind databázy, ktorá obsahuje informácie o zákazníkoch, objednávkach, produktoch a zamestnancoch. Analýza sa zameriava na identifikáciu kľúčových obchodných trendov, zákazníckych preferencií a pracovných návykov zamestnancov, pričom tieto poznatky môžu slúžiť na optimalizáciu predajných stratégií a zvýšenie spokojnosti zákazníkov.
 
+Ako prvý krok je potrebné zabezpečiť správne nastavenie používateľskej role, konkrétne training role, a využívať warehouse, ktorý je vytvorený na základe prideleného používateľského mena (KANGAROO). 
+
+#### Príklad kódu:
+
+```sql
+USE ROLE TRAINING_ROLE;
+CREATE WAREHOUSE IF NOT EXISTS KANGAROO_WH;
+USE WAREHOUSE KANGAROO_WH;
+```
+
+Po nastavení správnej role a warehouse je ďalším krokom vytvorenie databázy a staging schémy na ukladanie a spracovanie dát.
+
+#### Príklad kódu:
+
+```sql
+CREATE DATABASE IF NOT EXISTS KANGAROO_NORTHWIND_DB;
+USE KANGAROO_NORTHWIND_DB;
+CREATE SCHEMA IF NOT EXISTS KANGAROO_NORTHWIND_DB.STAGING;
+USE SCHEMA KANGAROO_NORTHWIND_DB.STAGING
+```
+
 Northwind databáza je verejne dostupná na [GitHube](https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/northwind-pubs) a zahŕňa 8 hlavných tabuliek:
 
 - `orderdetails` 
@@ -79,7 +100,7 @@ Keďže sa jedná o hviezdicový model, je potrebné určiť dimenzionálne tabu
 - `dim_shippers`: Obsahuje detaily o prepravcoch.
 - `dim_time`: Poskytuje časové údaje o objednávkach vrátane dátumu, času a ďalších časových dimenzií (rok, mesiac, deň, AM/PM).
 
-Po výbere faktovej tabuľky a dimenzionálnych tabuliek bola ich štruktúra navrhnutá v programe Workbench, čo umožňuje lepšie porozumenie a uľahčuje implementáciu.
+Po výbere faktovej tabuľky a dimenzionálnych tabuliek je ich štruktúra vytvorená v programe Workbench, čo zebezpečuje lepšie pochopenie a jednoduchšiu implementáciu.
 <p align="center">
   <img src="Northwind_star_scheme.png" alt="Obrázok 2 Schéma hviezdy pre Northwind" width="500"/>
   <br>
@@ -88,28 +109,38 @@ Po výbere faktovej tabuľky a dimenzionálnych tabuliek bola ich štruktúra na
 
 # 3 ETL proces v Snowflake
 
-ETL proces pozostával z troch hlavných fáz: extrahovanie (Extract), transformácia (Transform) a načítanie (Load). Tento proces bol implementovaný v Snowflake s cieľom pripraviť zdrojové dáta zo staging vrstvy do viacdimenzionálneho modelu vhodného na analýzu a vizualizáciu.
+ETL proces zahŕňa tri kľúčové kroky: extrakciu (Extract), transformáciu (Transform) a načítanie (Load). V prostredí Snowflake bol tento proces implementovaný na spracovanie zdrojových dát zo staging vrstvy, pričom výsledkom je viacdimenzionálny model optimalizovaný pre analýzu a vizualizáciu.
 
 ## 3.1 Extract (Extrahovanie dát)
 
-Dáta zo zdrojového datasetu (formát .csv) boli najprv nahraté do Snowflake prostredníctvom interného stage úložiska s názvom my_stage. Stage v Snowflake slúži ako dočasné úložisko na import alebo export dát. Vytvorenie stage bolo zabezpečené príkazom:
+Aby sa dáta z databázy Northwind mohli v Snowflake využivať je potrebné vytvoriť dočasné stage uložisko pomenované `my_stage`. V Snowflake následne tento stage nájdeme v sekci Add data -> Load files into a Stage. Aby sme tabuľky (.csv), nahrali do správneho stage, je potrebné vybrat našu vytovrenú databázu, schému a stage následovne: `KANGAROO_NORTHWIND_DB.STAGING` a vyberie sa `MY_STAGE`.
+Vytvorenie stage bolo zabezpečené príkazom:
 
 #### Príklad kódu:
 
 ```sql
 CREATE OR REPLACE STAGE my_stage;
 ```
-Do stage boli následne nahrané súbory obsahujúce údaje o rôznych entitách, ako sú kategórie, zákazníci, zamestnanci, objednávky, detaily objednávok, produkty, dodávatelia a prepravcovia. Tieto dáta boli následne spracované a importované do staging tabuliek pomocou príkazu COPY INTO. Pre každú tabuľku sa použil obdobný príkaz, upravený podľa konkrétnych dát a požiadaviek.
+Do stage boli následne nahrané súbory obsahujúce údaje o rôznych entitách, ako sú kategórie, zákazníci, zamestnanci, objednávky, detaily objednávok, produkty, dodávatelia a prepravcovia. 
+Dáta, ktoré boli nahraté do stage, boli následne naimportované do staging tabuliek prostredníctvom príkazu `COPY INTO`.
 
 #### Príklad kódu:
 
 ```sql
 COPY INTO products_staging
 FROM @my_stage/products.csv
-FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1);
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
 ```
+V prípade, že nastane pri importovani chyba, je možno použiť parameter `ON_ERROR = 'CONTINUE'`, ktorý zabezpečí pokračovanie procesu bez prerušenia.
 
-V prípade nekonzistentných záznamov bol použitý parameter ON_ERROR = 'CONTINUE', ktorý zabezpečil pokračovanie procesu bez prerušenia pri chybách.
+#### Príklad kódu:
+
+```sql
+COPY INTO products_staging
+FROM @my_stage/products.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1)
+ON_ERROR = 'CONTINUE';
+```
 
 ## 3.2 Transfor (Transformácia dát)
 
