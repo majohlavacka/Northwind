@@ -37,8 +37,7 @@ Northwind databáza je verejne dostupná na [GitHube](https://github.com/microso
 
 Dáta z .sql súboru importujeme do lokálneho serveru MySQL a jednotlivé tabuľky vyexportujeme do .csv súborov. 
 # 1.1 Dátová architektúra
-Pôvodne dáta, ktoré obsahuje databáza Northwind 
-Surové dáta sú organizované v relačnom databázovom modeli, ktorý je vizualizovaný pomocou entitno-relačného diagramu (ERD). Tento diagram zobrazuje hlavné entity v databáze Northwind, ich atribúty a vzájomné vzťahy.
+Pôvodné dáta v databáze Northwind sú uložené v relačnom databázovom modeli. Tento model je vizualizovaný prostredníctvom entitno-relačného diagramu (ERD), ktorý znázorňuje hlavné entity, ich atribúty a vzájomné vzťahy medzi nimi. Tento diagram poskytuje prehľad o štruktúre a prepojeniach dát v databáze.
 <p align="center">
   <img src="Northwind_ERD.png" alt="Obrázok 1 Entitno-relačná schéma Northwind" width="500"/>
   <br>
