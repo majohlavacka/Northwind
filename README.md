@@ -88,6 +88,8 @@ OrderDetails (Detaily objednávok): Spojovacia tabuľku medzi objednávkami a pr
 - `ProductId` - Vzťah k tabuľke Products.
 - `Quantity` - Počet objednaných kusov.
 
+Aby sme si overili, či sa tabuľky vytvorili správne použijeme príkaz `SHOW TABLES`.
+
 # 2 Dimenzionálny model
 Na základe entito-relačnej schemy bol navrhnuty hviezdicový model (star scheme), ktorý slúži na efektívne organizovanie a analyzovanie dát.
 Faktová tabuľka `fact_orderdetails` bola zvolená ako centrálny bod, pretože obsahuje detailné transakčné údaje o objednávkach, ktoré sú kľúčové pre analýzu.
@@ -139,6 +141,8 @@ FROM @my_stage/products.csv
 FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1)
 ON_ERROR = 'CONTINUE';
 ```
+
+Následne si overíme doplnené údaje prostredníctvom príkazu `DESCRIBE` a špecifikujeme danú tabuľku.
 
 ## 3.2 Transfor (Transformácia dát)
 
