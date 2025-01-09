@@ -168,3 +168,57 @@ SELECT DISTINCT
 FROM employees_staging;
 ```
 
+Dimenzionálna tabuľka `dim_products` obsahuje údaje o produktoch vrátane názvu produktu, kategórie, dodávateľa a ceny. Okrem základných informácií pridáva transformáciu kategorizácie cien do skupín – 'Nízka', 'Stredná' a 'Vysoká'. Táto tabuľka je navrhnutá ako SCD Typ 2, čo umožňuje sledovať historické zmeny cien a cenových kategórií v čase pomocou stĺpcov `valid_from` a `valid_to`.
+
+```sql
+CREATE OR REPLACE TABLE dim_products AS
+SELECT DISTINCT
+    ProductId AS productsId,
+    ProductName AS product_name,
+    COALESCE(CategoryName, 'Neznáma kategória') AS category_name,
+    COALESCE(SupplierName, 'Neznámy dodávateľ') AS supplier_name,
+    Price AS price,
+    CASE 
+        WHEN Price < 20 THEN 'Nízka'
+        WHEN Price BETWEEN 20 AND 50 THEN 'Stredná'
+        WHEN Price > 50 THEN 'Vysoká'
+        ELSE 'Neznáme'
+    END AS price_category,
+    CURRENT_DATE AS valid_from,
+    NULL AS valid_to
+FROM products_staging
+LEFT JOIN categories_staging ON products_staging.CategoryId = categories_staging.CategoryId
+LEFT JOIN suppliers_staging ON products_staging.SupplierId = suppliers_staging.SupplierId;
+```
+
+Dimenzionálna tabuľka `dim_date` obsahuje dátumové údaje, ktoré sú rozšírené o odvodené informácie, ako sú deň, mesiac, rok, sezóna (Zima, Jar, Leto, Jeseň) a deň v týždni (Pondelok až Nedeľa). Deň v týždni začína pondelkom ako deň 1 a končí nedeľou ako deň 7. Táto tabuľka je typu SCD Typ 0, čo znamená, že údaje v nej sa nemenia po ich vytvorení a zostávajú statické. Tabuľka umožňuje podrobné časové analýzy objednávok na základe sezóny a dní v týždni.
+
+```sql
+CREATE OR REPLACE TABLE dim_date AS
+SELECT DISTINCT
+    ROW_NUMBER() OVER (ORDER BY OrderDate) AS datedId,
+    TO_DATE(OrderDate) AS order_date,
+    DATE_PART('day', OrderDate) AS den,
+    DATE_PART('month', OrderDate) AS mesiac,
+    DATE_PART('year', OrderDate) AS rok,
+    CASE
+        WHEN DATE_PART('month', OrderDate) IN (12, 1, 2) THEN 'Zima'
+        WHEN DATE_PART('month', OrderDate) IN (3, 4, 5) THEN 'Jar'
+        WHEN DATE_PART('month', OrderDate) IN (6, 7, 8) THEN 'Leto'
+        WHEN DATE_PART('month', OrderDate) IN (9, 10, 11) THEN 'Jeseň'
+        ELSE 'Neznáme'
+    END AS sezona,
+    CASE (DATE_PART('dow', OrderDate) + 1)
+        WHEN 1 THEN 'Pondelok'
+        WHEN 2 THEN 'Utorok'
+        WHEN 3 THEN 'Streda'
+        WHEN 4 THEN 'Štvrtok'
+        WHEN 5 THEN 'Piatok'
+        WHEN 6 THEN 'Sobota'
+        WHEN 7 THEN 'Nedeľa'
+    END AS den_v_tyzdni
+FROM orders_staging;
+```
+Dimenzionálne tabuľky `dim_customers` a `dim_shippers` su taktiež typu SCD 0, pretože ich sú statické a nemenia sa. 
+
+
