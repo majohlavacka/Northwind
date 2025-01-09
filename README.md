@@ -99,7 +99,7 @@ Keďže sa jedná o hviezdicový model, je potrebné určiť dimenzionálne tabu
 - `dim_customers`: Uchováva údaje zákazníkov, ako meno, kontaktné údaje, mesto a krajinu.
 - `dim_employees`:  Zaznamenáva informácie o zamestnancoch, ako sú mená a dátumy narodenia.
 - `dim_shippers`: Obsahuje detaily o prepravcoch.
-- `dim_time`: Poskytuje časové údaje o objednávkach vrátane dátumu, času a ďalších časových dimenzií (rok, mesiac, deň, AM/PM).
+- `dim_time`: Poskytuje časové údaje o objednávkach vrátane dátumu, času a ďalších časových dimenzií.
 
 Po výbere faktovej tabuľky a dimenzionálnych tabuliek je ich štruktúra vytvorená v programe Workbench, čo zebezpečuje lepšie pochopenie a jednoduchšiu implementáciu.
 <p align="center">
@@ -112,7 +112,7 @@ Po výbere faktovej tabuľky a dimenzionálnych tabuliek je ich štruktúra vytv
 
 ETL proces zahŕňa tri kľúčové kroky: extrakciu (Extract), transformáciu (Transform) a načítanie (Load). V prostredí Snowflake bol tento proces implementovaný na spracovanie zdrojových dát zo staging vrstvy, pričom výsledkom je viacdimenzionálny model optimalizovaný pre analýzu a vizualizáciu.
 
-## 3.1 Extract (Extrahovanie dát)
+## 3.1 Extrahovanie dát (Extract) z tabuliek
 
 Aby sa dáta z databázy Northwind mohli v Snowflake využivať je potrebné vytvoriť dočasné stage uložisko pomenované `my_stage`. V Snowflake následne tento stage nájdeme v sekci Add data -> Load files into a Stage. Aby sme tabuľky (.csv), nahrali do správneho stage, je potrebné vybrat našu vytovorenú databázu, schému a stage následovne: `KANGAROO_NORTHWIND_DB.STAGING` a vyberie sa `MY_STAGE`.
 
@@ -144,5 +144,27 @@ ON_ERROR = 'CONTINUE';
 
 Následne si overíme doplnené údaje prostredníctvom príkazu `DESCRIBE` a špecifikujeme danú tabuľku.
 
-## 3.2 Transfor (Transformácia dát)
+## 3.2 ETL - Transformácia dát do dimenzionálnych tabuliek
+
+V kroku transformácie boli dáta upravené do podoby vhodnej na analytické využitie. Boli pripravené dimenzie a faktová tabuľka, ktoré tvoria pevný základ pre rýchle a presné vyhodnocovanie kľúčových ukazovateľov.
+
+Dimenzionálna tabuľka dim_employees rozširuje údaje o zamestnancoch pridaním vekových kategórií (napr. 'Pod 20 rokov', '20-29 rokov', '30-39 rokov', '40-49 rokov', '50 a viac rokov'). Táto tabuľka využíva SCD Typ 1 (pomaly sa meniaca dimenzia), čo znamená, že pri zmene údajov sa veková kategória aktualizuje a starý záznam sa prepíše novým bez uchovávania histórie.
+
+```sql
+CREATE OR REPLACE TABLE dim_employees AS
+SELECT DISTINCT
+    EmployeeId AS employeesId,
+    FirstName AS first_name,
+    LastName AS last_name,
+    BirthDate AS birth_date,
+    CASE 
+        WHEN DATE_PART(year, CURRENT_DATE) - DATE_PART(year, BirthDate) < 20 THEN 'Pod 20 rokov'
+        WHEN DATE_PART(year, CURRENT_DATE) - DATE_PART(year, BirthDate) BETWEEN 20 AND 29 THEN '20-29 rokov'
+        WHEN DATE_PART(year, CURRENT_DATE) - DATE_PART(year, BirthDate) BETWEEN 30 AND 39 THEN '30-39 rokov'
+        WHEN DATE_PART(year, CURRENT_DATE) - DATE_PART(year, BirthDate) BETWEEN 40 AND 49 THEN '40-49 rokov'
+        WHEN DATE_PART(year, CURRENT_DATE) - DATE_PART(year, BirthDate) >= 50 THEN '50 a viac rokov'
+        ELSE 'Neznáme'
+    END AS age_group
+FROM employees_staging;
+```
 
