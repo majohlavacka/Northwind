@@ -112,7 +112,7 @@ Po výbere faktovej tabuľky a dimenzionálnych tabuliek je ich štruktúra vytv
 
 ETL proces zahŕňa tri kľúčové kroky: extrakciu (Extract), transformáciu (Transform) a načítanie (Load). V prostredí Snowflake bol tento proces implementovaný na spracovanie zdrojových dát zo staging vrstvy, pričom výsledkom je viacdimenzionálny model optimalizovaný pre analýzu a vizualizáciu.
 
-## 3.1 Extrahovanie dát (Extract) z tabuliek
+## 3.1 Extrahovanie dát z tabuliek (EXTRACT)
 
 Aby sa dáta z databázy Northwind mohli v Snowflake využivať je potrebné vytvoriť dočasné stage uložisko pomenované `my_stage`. V Snowflake následne tento stage nájdeme v sekci Add data -> Load files into a Stage. Aby sme tabuľky (.csv), nahrali do správneho stage, je potrebné vybrat našu vytovorenú databázu, schému a stage následovne: `KANGAROO_NORTHWIND_DB.STAGING` a vyberie sa `MY_STAGE`.
 
@@ -144,7 +144,7 @@ ON_ERROR = 'CONTINUE';
 
 Následne si overíme doplnené údaje prostredníctvom príkazu `DESCRIBE` a špecifikujeme danú tabuľku.
 
-## 3.2 ETL - Transformácia dát do dimenzionálnych tabuliek
+## 3.2 Transformácia dát do dimenzionálnych tabuliek (TRANSFER)
 
 V kroku transformácie boli dáta upravené do podoby vhodnej na analytické využitie. Boli pripravené dimenzie a faktová tabuľka, ktoré tvoria pevný základ pre rýchle a presné vyhodnocovanie kľúčových ukazovateľov.
 
@@ -221,4 +221,41 @@ FROM orders_staging;
 ```
 Dimenzionálne tabuľky `dim_customers` a `dim_shippers` su taktiež typu SCD 0, pretože ich sú statické a nemenia sa. 
 
+Faktová tabuľka `fact_orderdetails` obsahuje podrobné záznamy o objednávkach a ich položkách. Obsahuje metriky, ako je množstvo objednaných položiek a celková cena vypočítaná na základe ceny produktov a počtu kusov. Tabuľka prepája všetky dimenzionálne tabuľky (dim_customers, dim_employees, dim_products, dim_shippers a dim_date), čím umožňuje analýzu objednávok z rôznych pohľadov, napríklad podľa zákazníkov, produktov, prepravcov alebo časového obdobia.
 
+```sql
+CREATE OR REPLACE TABLE fact_orderdetails AS
+SELECT
+    od.OrderDetailId AS orderdetails_id,
+    o.OrderId AS order_id,
+    c.customerId AS customer_id,
+    e.employeesId AS employee_id,
+    p.productsId AS product_id,
+    s.shippersId AS shipper_id,
+    d.datedId AS date_id,
+    od.Quantity AS quantity,
+    od.Quantity * p.Price AS total_price
+FROM orderdetails_staging od
+JOIN orders_staging o ON od.OrderId = o.OrderId
+JOIN dim_customers c ON o.CustomerId = c.customerId
+JOIN dim_employees e ON o.EmployeeId = e.employeesId
+JOIN dim_products p ON od.ProductId = p.productsId
+JOIN dim_shippers s ON o.ShipperId = s.shippersId
+JOIN dim_date d ON TO_DATE(o.OrderDate) = d.order_date;
+```
+## 3.3  Načitanie dát do dimenzionálnych tabuliek (LOAD)
+
+V záverečnej fáze procesu ETL boli dáta, po vyčistení a transformácii, nahraté do finálnych tabuliek dátového modelu Northwind. Následne boli staging tabuľky odstránené pomocou nasledujúcich príkazov, čím sa optimalizovalo využitie úložného priestoru v Snowflake.
+
+```sql
+DROP TABLE IF EXISTS suppliers_staging;
+DROP TABLE IF EXISTS categories_staging;
+DROP TABLE IF EXISTS products_staging;
+DROP TABLE IF EXISTS customers_staging;
+DROP TABLE IF EXISTS employees_staging;
+DROP TABLE IF EXISTS shippers_staging;
+DROP TABLE IF EXISTS orders_staging;
+DROP TABLE IF EXISTS orderdetails_staging;
+```
+
+Výsledný dátový model Northwind umožňuje analyzovať obchodné procesy....
