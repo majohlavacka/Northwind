@@ -24,7 +24,7 @@ CREATE SCHEMA IF NOT EXISTS KANGAROO_NORTHWIND_DB.STAGING;
 USE SCHEMA KANGAROO_NORTHWIND_DB.STAGING
 ```
 
-Northwind databáza je verejne dostupná na [GitHube](https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/northwind-pubs) a zahŕňa 8 hlavných tabuliek:
+Northwind databáza zahŕňa 8 hlavných tabuliek:
 
 - `orderdetails` 
 - `products`
