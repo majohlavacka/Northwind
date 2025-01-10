@@ -258,4 +258,87 @@ DROP TABLE IF EXISTS orders_staging;
 DROP TABLE IF EXISTS orderdetails_staging;
 ```
 
-Výsledný dátový model Northwind umožňuje analyzovať obchodné procesy....
+Výsledný dátový model Northwind umožňuje podrobnú analýzu obchodných procesov. Vďaka prepojeniu dimenzionálnych a faktovej tabuľky je možné sledovať predajné trendy podľa zákazníkov, produktov, zamestnancov a časového obdobia.
+
+## 4 Vizualizácia dát
+
+Posledným krokom projektu je vizualizácia dát prostredníctvom dashboardu v Snowflake, ktorý umožňuje zobrazovať interaktívne grafy a tabuľky. Dashboard bol navrhnutý s cieľom poskytnúť ucelený prehľad o obchodných procesoch v spoločnosti Northwind. Prostredníctvom grafov a reportov môžu používatelia ľahko analyzovať kľúčové metriky, ako sú objemy predajov, výkonnosť prepravných spoločností a trendy v objednávkach podľa času.
+
+<p align="center">
+  <img src="Dashboard_Northwind.png" alt="Obrázok 3 Dashboard Northwind predajov" width="500"/>
+  <br>
+  <i>Obrázok 3 Dashboard Northwind predajov.</i>
+</p>
+
+## Graf 1: TOP 10 najviac predávaných produktov  
+
+Graf zobtazuje top 10 najpredávanejších produktov podľa celkového množstva predaja. Výstup zobrazuje názvy produktov spolu so súčtom predaných kusov. Tento výsledok pomáha obchodníkom identifikovať najžiadanejšie produkty, čo môže podporiť zlepšenie marketingových stratégií a rozhodovanie o prioritizácii zásob.
+
+```sql
+SELECT 
+   p.product_name, 
+   SUM(od.quantity) AS total_quantity
+FROM fact_orderdetails od
+  JOIN dim_products p ON od.product_id = p.productsId
+GROUP BY p.product_name
+ORDER BY total_quantity DESC
+LIMIT 10;
+```
+
+## Graf 2: Objem objednávok podľa časového obdobia
+
+Graf umožňuje sledovať predajné trendy v rôznych časových obdobiach, čo pomáha identifikovať sezónne výkyvy v predaji a plánovať marketingové kampane alebo zásoby na základe historických dát.
+
+```sql
+SELECT 
+    d.rok, 
+    d.mesiac, 
+    SUM(od.total_price) AS monthly_sales
+FROM fact_orderdetails od
+JOIN dim_date d ON od.date_id = d.datedId
+GROUP BY d.rok, d.mesiac
+ORDER BY d.rok, d.mesiac;
+```
+
+## Graf 3: Počet objednávok podľa cenových kategórií produktov
+
+Graf zobrazuje počet objednávok podľa cenových kategórií produktov, pričom produkty sú rozdelené do kategórií „Nízka“, „Stredná“ a „Vysoká“ na základe ich ceny a pomáha pochopiť, ktoré cenové kategórie produktov sú najobľúbenejšie medzi zákazníkmi, čo je dôležité pre plánovanie cenovej politiky a marketingových stratégií.
+
+```sql
+SELECT 
+   p.price_category, 
+   COUNT(od.order_id) AS total_orders
+FROM fact_orderdetails od
+JOIN dim_products p ON od.product_id = p.productsId
+GROUP BY p.price_category
+ORDER BY total_orders DESC;
+```
+
+## Graf 4: Trend predaja podľa sezón
+
+Graf zobrazuje trend predaja podľa sezón (Zima, Jar, Leto, Jeseň). Výstup grafu umožňuje identifikovať, v ktorom ročnom období sú predaje najvyššie, čo pomáha firmám prispôsobiť marketingové kampane a zásobovanie sezónnym výkyvom v dopyte.
+
+```sql
+SELECT 
+   d.sezona, 
+   SUM(od.total_price) AS total_sales
+FROM fact_orderdetails od
+JOIN dim_date d ON od.date_id = d.datedId
+GROUP BY d.sezona
+ORDER BY total_sales DESC;
+```
+
+## Graf 5: Počet objednávok podľa prepravných spoločností
+
+Graf zobrazuje počet objednávok rozdelených podľa prepravných spoločností. Výstup umožňuje analyzovať, ktorá prepravná spoločnosť spracováva najviac objednávok, čo môže pomôcť pri rozhodovaní o spolupráci a optimalizácii logistických procesov. 
+
+```sql
+SELECT 
+    s.shipper_name, 
+    COUNT(od.order_id) AS total_orders
+FROM fact_orderdetails od
+JOIN dim_shippers s ON od.shipper_id = s.shippersId
+GROUP BY s.shipper_name
+ORDER BY total_orders DESC;
+```
+#### Autor: Marián Hlavačka
