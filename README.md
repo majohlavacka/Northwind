@@ -270,6 +270,7 @@ Posledným krokom projektu je vizualizácia dát prostredníctvom dashboardu v S
   <i>Obrázok 3 Dashboard Northwind predajov.</i>
 </p>
 
+
 ## Graf 1: TOP 10 najviac predávaných produktov  
 
 Graf zobtazuje top 10 najpredávanejších produktov podľa celkového množstva predaja. Výstup zobrazuje názvy produktov spolu so súčtom predaných kusov. Tento výsledok pomáha obchodníkom identifikovať najžiadanejšie produkty, čo môže podporiť zlepšenie marketingových stratégií a rozhodovanie o prioritizácii zásob.
