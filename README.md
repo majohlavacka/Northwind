@@ -265,7 +265,7 @@ Výsledný dátový model Northwind umožňuje podrobnú analýzu obchodných pr
 Posledným krokom projektu je vizualizácia dát prostredníctvom dashboardu v Snowflake, ktorý umožňuje zobrazovať interaktívne grafy a tabuľky. Dashboard bol navrhnutý s cieľom poskytnúť ucelený prehľad o obchodných procesoch v spoločnosti Northwind. Prostredníctvom grafov a reportov môžu používatelia ľahko analyzovať kľúčové metriky, ako sú objemy predajov, výkonnosť prepravných spoločností a trendy v objednávkach podľa času.
 
 <p align="center">
-  <img src="Dashboard_Northwind.png" alt="Obrázok 3 Dashboard Northwind predajov" width="500"/>
+  <img src="Dashboard_Northwind.png" alt="Obrázok 3 Dashboard Northwind predajov" width="800"/>
   <br>
   <i>Obrázok 3 Dashboard Northwind predajov.</i>
 </p>
