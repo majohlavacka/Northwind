@@ -101,6 +101,12 @@ Keďže sa jedná o hviezdicový model, je potrebné určiť dimenzionálne tabu
 - `dim_shippers`: Obsahuje detaily o prepravcoch.
 - `dim_time`: Poskytuje časové údaje o objednávkach vrátane dátumu, času a ďalších časových dimenzií.
 
+<p align="center">
+  <img src="Northwind_star_scheme.png" alt="Obrázok 2 Schéma hviezdy pre Northwind" width="500"/>
+  <br>
+  <i>Obrázok 2 Schéma hviezdy pre Northwind.</i>
+</p>
+
 Po výbere faktovej tabuľky a dimenzionálnych tabuliek je ich štruktúra vytvorená v programe Workbench, čo zebezpečuje lepšie pochopenie a jednoduchšiu implementáciu.
 
 
