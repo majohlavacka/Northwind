@@ -102,7 +102,7 @@ Keďže sa jedná o hviezdicový model, je potrebné určiť dimenzionálne tabu
 - `dim_time`: Poskytuje časové údaje o objednávkach, vrátane dňa, mesiaca, roka, sezóny a dňa v týždni.
 
 <p align="center">
-  <img src="Northwind_star_scheme.png" alt="Obrázok 2 Schéma hviezdy pre Northwind" width="500"/>
+  <img src="Northwind_starscheme.png" alt="Obrázok 2 Schéma hviezdy pre Northwind" width="500"/>
   <br>
   <i>Obrázok 2 Schéma hviezdy pre Northwind.</i>
 </p>
