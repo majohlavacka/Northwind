@@ -1,5 +1,5 @@
 # ETL proces datasetu Northwind
-Tento repozitár obsahuje implementáciu ETL procesu v Snowflake pre analýzu dát z Northwind datasetu. Projekt sa zameriava na analýzu správania zákazníkov a ich nákupných preferencií na základe informácií o objednávkach, produktoch a zákazníkoch. Výsledný dátový model umožňuje multidimenzionálnu analýzu a vizualizáciu kľúčových metrik, ako sú tržby, obľúbenosť produktov, a sezónne trendy.
+Repozitár obsahuje implementáciu ETL procesu v Snowflake, ktorý spracováva údaje z Northwind datasetu. Hlavným cieľom projektu je analýza správania zákazníkov a ich nákupných preferencií na základe dát o objednávkach, produktoch a zákazníkoch. Výsledný dátový model umožňuje multidimenzionálny pohľad na kľúčové metriky, ako sú tržby, popularita produktov a sezónne trendy, čím podporuje efektívnejšiu vizualizáciu a rozhodovanie.
 # 1 Úvod a popis zdrojových dát
 Cieľom tohto projektu je vykonať analýzu dát z Northwind databázy, ktorá obsahuje informácie o zákazníkoch, objednávkach, produktoch a zamestnancoch. Analýza sa zameriava na identifikáciu kľúčových obchodných trendov, zákazníckych preferencií a pracovných návykov zamestnancov, pričom tieto poznatky môžu slúžiť na optimalizáciu predajných stratégií a zvýšenie spokojnosti zákazníkov.
 
@@ -219,7 +219,7 @@ SELECT DISTINCT
     END AS den_v_tyzdni
 FROM orders_staging;
 ```
-Dimenzionálne tabuľky `dim_customers` a `dim_shippers` su taktiež typu SCD 0, pretože ich sú statické a nemenia sa. 
+Dimenzionálne tabuľky `dim_customers` a `dim_shippers` su taktiež typu SCD 0, pretože ich údaje sú statické a nemenia sa. 
 
 Faktová tabuľka `fact_orderdetails` obsahuje podrobné záznamy o objednávkach a ich položkách. Obsahuje metriky, ako je množstvo objednaných položiek a celková cena vypočítaná na základe ceny produktov a počtu kusov. Tabuľka prepája všetky dimenzionálne tabuľky (dim_customers, dim_employees, dim_products, dim_shippers a dim_date), čím umožňuje analýzu objednávok z rôznych pohľadov, napríklad podľa zákazníkov, produktov, prepravcov alebo časového obdobia.
 
@@ -262,7 +262,7 @@ Výsledný dátový model Northwind umožňuje podrobnú analýzu obchodných pr
 
 ## 4 Vizualizácia dát
 
-Posledným krokom projektu je vizualizácia dát prostredníctvom dashboardu v Snowflake, ktorý umožňuje zobrazovať interaktívne grafy a tabuľky. Dashboard bol navrhnutý s cieľom poskytnúť ucelený prehľad o obchodných procesoch v spoločnosti Northwind. Prostredníctvom grafov a reportov môžu používatelia ľahko analyzovať kľúčové metriky, ako sú objemy predajov, výkonnosť prepravných spoločností a trendy v objednávkach podľa času.
+Posledným krokom projektu je vizualizácia dát prostredníctvom dashboardu v Snowflake, ktorý umožňuje zobrazovať interaktívne grafy a tabuľky. Dashboard bol navrhnutý s cieľom poskytnúť ucelený prehľad o obchodných procesoch simulovaných v Northwind databáze. Prostredníctvom grafov a reportov môžu používatelia ľahko analyzovať kľúčové metriky, ako sú objemy predajov, výkonnosť prepravných spoločností a trendy v objednávkach podľa času.
 
 <p align="center">
   <img src="Dashboard_Northwind.png" alt="Obrázok 3 Dashboard Northwind predajov" width="800"/>
