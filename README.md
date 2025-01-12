@@ -95,11 +95,11 @@ Na základe entito-relačnej schemy bol navrhnuty hviezdicový model (star schem
 Faktová tabuľka `fact_orderdetails` bola zvolená ako centrálny bod, pretože obsahuje detailné transakčné údaje o objednávkach, ktoré sú kľúčové pre analýzu.
 
 Keďže sa jedná o hviezdicový model, je potrebné určiť dimenzionálne tabuľky, ktoré sú následovné:
-- `dim_products`: Obsahuje informácie o produktoch vrátane ich názvu, ceny, kategórie a údajov o dodávateľoch.
-- `dim_customers`: Uchováva údaje zákazníkov, ako meno, kontaktné údaje, mesto a krajinu.
-- `dim_employees`:  Zaznamenáva informácie o zamestnancoch, ako sú mená a dátumy narodenia.
-- `dim_shippers`: Obsahuje detaily o prepravcoch.
-- `dim_time`: Poskytuje časové údaje o objednávkach vrátane dátumu, času a ďalších časových dimenzií.
+- `dim_products`: Obsahuje informácie o produktoch, ich cenách, kategóriách a dodávateľoch, vrátane kategorizácie cien (nízka, stredná, vysoká).
+- `dim_customers`: Uchováva údaje zákazníkov ako meno, kontaktné údaje, mesto, krajinu a psč.
+- `dim_employees`:  Zaznamenáva informácie o zamestnancoch ako sú mená, dátumy narodenia a vekové skupiny.
+- `dim_shippers`: Obsahuje údaje o prepravcoch ako názov prepravcu a telefónne číslo.
+- `dim_time`: Poskytuje časové údaje o objednávkach, vrátane dňa, mesiaca, roka, sezóny a dňa v týždni.
 
 <p align="center">
   <img src="Northwind_star_scheme.png" alt="Obrázok 2 Schéma hviezdy pre Northwind" width="500"/>
